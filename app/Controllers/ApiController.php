@@ -10,6 +10,7 @@ use App\Services\Config;
 use App\Utils\Tools;
 use App\Utils\Hash;
 use App\Utils\Helper;
+use App\Utils\URL;
 
 /**
  *  ApiController
@@ -160,5 +161,44 @@ class ApiController extends BaseController
         $res['msg'] = "ok";
         $res['data'] = $data;
         return $this->echoJson($response, $res);
+    }
+
+    public function login($request, $response, $args)
+    {
+        $email =  $request->getParam('email');
+        $passwd = $request->getParam('passwd');
+
+        if ($email==null) {
+            $res['ret'] = 0;
+            $res['msg'] = "email not ok!";
+            return $this->echoJson($response, $res);
+        }
+
+        $user = User::where('email', $email)->first();
+
+        if ($user==null) {
+            $res['ret'] = 0;
+            $res['msg'] = "user not ok!";
+            return $this->echoJson($response, $res);            
+        }
+
+        if (!Hash::checkPassword($user->pass, $passwd)) {
+            $res['ret'] = 0;
+            $res['msg'] = "password not ok!";
+            return $this->echoJson($response, $res);            
+        }
+
+        $res['ret'] = 1;
+        $res['msg'] = "ok!";
+        $res['data']['email'] = $email;
+        $res['data']['class'] = $user->class;
+        $res['data']['class_expire'] = $user->class_expire;
+        $res['data']['unusedTraffic'] = $user->unusedTraffic();
+        $res['data']['TodayusedTraffic'] = $user->TodayusedTraffic();
+        $pre_user = URL::cloneUser($user);
+        $res['data']['ssr_url_all'] = Tools::base64_url_encode(URL::getAllUrl($pre_user, 0, 0));
+        $res['data']['ssr_url_all_mu'] = Tools::base64_url_encode(URL::getAllUrl($pre_user, 1, 0));
+
+         return $this->echoJson($response, $res);
     }
 }
