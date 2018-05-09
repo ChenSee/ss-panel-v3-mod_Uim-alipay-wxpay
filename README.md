@@ -1,4 +1,34 @@
-# 欢迎使用ss panel v3 mod 再次修改版
+#这是一个windows客户端和面板对接的分支
+
+=======================
+感谢朝阳群众，此项目所有工作均由朝阳群众完成，我只是个上传的
+
+特性：填写网址/api/login、用户名和密码既可以获取节点
+例如：
+ - 网址:http://example/api/login
+ - 用户名:user
+ - 密码:passwd
+ 
+爬虫模式介绍:只要用户中心有ssr://批量链接即可获取节点，无需更新面板（爬虫模式目前暂不支持Uim版，支持魔改版、魔改91vps版）
+例如：
+ - 网址:http://example/ （注意：最后必须要有'/'）
+ - 用户名:user
+ - 密码:passwd
+ 
+使用：Uim版面板请切换ShadowsocksR-for-Windows-with-login-support分支，魔改版原版和魔改91vps版请手动更新或使用爬虫模式
+
+客户端：https://github.com/dumplin233/shadowsocks-csharp/releases
+
+面板：https://github.com/NimaQu/ss-panel-v3-mod_Uim/commits/ShadowsocksR-for-Windows-with-login-support
+
+
+
+
+
+
+
+
+#欢迎使用ss panel v3 mod 再次修改版
 
 
 **ss-panel-v3-mod**是一款转为shadowsocks设计的web前端面板，再次感谢ss-panel-v3mod 的制作者，修改后的功能简介：
