@@ -616,6 +616,14 @@ class UserController extends BaseController
         $ports_count += 1;
 
         foreach ($nodes as $node) {
+            if (Config::get('group_num')) {
+                $temp=explode("/",  $node->name);
+                if (is_numeric($temp[0])) {
+                    $node->node_group = $temp[0];
+                    $user->node_group = $user->id % Config::get('group_num') + 1;
+                }
+            }
+
             if (((($user->node_group==$node->node_group||$node->node_group==0))||$user->is_admin)&&(!$node->isNodeTrafficOut())) {
                 if ($node->sort==9) {
                     $mu_user=User::where('port', '=', $node->server)->first();
@@ -716,6 +724,11 @@ class UserController extends BaseController
             return null;
         }
 
+        if (Config::get('group_num')) {
+            $temp=explode("/",  $node->name);
+            $node->node_group = $temp[0];
+            $user->node_group = $user->id % Config::get('group_num') + 1;
+        }
 
         switch ($node->sort) {
 

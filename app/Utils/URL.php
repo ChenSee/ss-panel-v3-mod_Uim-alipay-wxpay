@@ -167,7 +167,14 @@ class URL
             $relay_rules = array();
         }
         foreach ($nodes as $node) {
-            if ($node->mu_only != 1 && $is_mu == 0) {
+            if (Config::get('group_num')) {
+                $temp=explode("/",  $node->name);
+                if (is_numeric($temp[0])) {                    
+                    $node->node_group = $temp[0];
+                    $user->node_group = $user->id % Config::get('group_num') + 1;
+                }
+            }
+            if ($node->mu_only != 1 && $is_mu == 0 && ($user->node_group==$node->node_group||$node->node_group==0)) {
                 if ($node->sort == 10) {
                     $relay_rule_id = 0;
                     $relay_rule = Tools::pick_out_relay_rule($node->id, $user->port, $relay_rules);
@@ -187,7 +194,7 @@ class URL
                     }
                 }
             }
-            if ($node->custom_rss == 1 && $node->mu_only != -1 && $is_mu != 0) {
+            if ($node->custom_rss == 1 && $node->mu_only != -1 && $is_mu != 0 && ($user->node_group==$node->node_group||$node->node_group==0)) {
                 foreach ($mu_nodes as $mu_node) {
                     if ($node->sort == 10) {
                         $relay_rule_id = 0;
