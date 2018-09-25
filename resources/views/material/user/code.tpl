@@ -359,7 +359,7 @@
         $("#AliPayType").val($(this).attr('price'));
     });
     $("#urlChangeAliPay,#urlChangeAliPay2").unbind('click').click(function () {
-        var $type = $(this).attr('type')
+        var $type = $(this).attr('type');
         if ($type == 2) {
             $('.textShow').html('手机端长按二维码保存到手机<br>点击二维码进入扫一扫选择图片支付');
             if ('{$QRcodeUrl}'.indexOf('|') > 0) var pay_url = $wxpayUrl[$pay_type];
