@@ -66,6 +66,35 @@ class TelegramProcess
 						$bot->sendMessage($message->getChat()->getId(), "特殊签到暂时没有开启哦", $parseMode = null, $disablePreview = false, $replyToMessageId = $reply_to);
 				break;
 					}
+				//SS/SSR一键切换————————————————————————————————————————————————————————————————————
+				case 'switch':
+					$text = explode(" ",$message->getText(),2);
+					$param = $text[1];
+					if(!isset($text[1])) {
+						$bot->sendMessage($message->getChat()->getId(), "参数为空！\r\n\r\n切换为SS/SSD请发送 /switch ss\r\n切换为SSR请发送 /switch ssr", $parseMode = null, $disablePreview = false, $replyToMessageId = $reply_to);
+					}
+					//SS/SSD
+					if ($param == "ss" ) {
+						$user->method = "aes-256-gcm";
+						$user->protocol = "origin";
+						$user->protocol_param = "";
+						$user->obfs = "plain";
+						$user->obfs_param = Config::get('reg_obfs_param');
+						$user->save();
+						$bot->sendMessage($message->getChat()->getId(), "您的加密协议混淆设置已经设置为SS/SSD配置\r\n请更新订阅后使用。", $parseMode = null, $disablePreview = false, $replyToMessageId = $reply_to);
+						break;
+					}
+					//SSR
+					if ($param == "ssr" ) {
+						$user->method = "aes-256-cfb";
+						$user->protocol = "auth_aes128_md5";
+						$user->protocol_param = "";
+						$user->obfs = "http_simple";
+						$user->obfs_param = Config::get('reg_obfs_param');
+						$user->save();
+						$bot->sendMessage($message->getChat()->getId(), "您的加密协议混淆设置已经设置为SSR配置\r\n请更新订阅后使用。", $parseMode = null, $disablePreview = false, $replyToMessageId = $reply_to);
+					}
+				break;
 				//prpr——————————————————————————————————————————————————————————————————————————
 	    		case 'prpr':
 					$prpr = array('⁄(⁄ ⁄•⁄ω⁄•⁄ ⁄)⁄', '(≧ ﹏ ≦)', '(*/ω＼*)', 'ヽ(*。>Д<)o゜', '(つ ﹏ ⊂)', '( >  < )');
