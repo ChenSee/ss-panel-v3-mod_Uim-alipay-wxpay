@@ -197,6 +197,7 @@ Telegram ID ： ".$telegramID."
 /checkin - 签到（记得日常签到哦）
 /specialcheckin - 特殊签到（偶尔开放）
 /stat - 查询等级/流量
+/switch - 切换SS/SSR配置
 /account - 用户详情（包含邮箱、注册ip等内容）
 /prpr - 调戏
 /ping - 查看群组或用户id
@@ -334,6 +335,7 @@ Telegram ID ： ".$telegramID."
 /checkin - 签到（记得日常签到哦）
 /specialcheckin - 特殊签到（偶尔开放）
 /stat - 查询等级/流量
+/switch - 切换SS/SSR配置
 /account - 用户详情（包含邮箱、注册ip等内容）
 /prpr - 调戏
 /ping - 查看群组或用户id
