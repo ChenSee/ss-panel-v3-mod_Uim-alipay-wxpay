@@ -113,6 +113,7 @@ $System_Config['notify_limit_value'] = '20';			//当上一项为per时，此处�
 
 
 //Telegram bot设置------------------------------------------------------------------------------------
+#基础设置
 $System_Config['enable_telegram']='false';			//是否开启Telegram bot
 $System_Config['telegram_token']='';				//Telegram bot,bot 的 token ，跟 father bot 申请
 $System_Config['telegram_chatid']='';				//Telegram bot,群组会话 ID,把机器人拉进群里之后跟他 /ping 一下即可得到。
@@ -125,6 +126,11 @@ $System_Config['telegram_qrcode']='zxing_local';	//二维码解码方式，onlin
 $System_Config['telegram_request_token']='';		//Telegram 机器人请求Key，随意设置，由大小写英文和数字组成，更新这个参数之后请 php xcat setTelegram
 $System_Config['enable_welcome_message']='true';	//机器人发送欢迎消息
 $System_Config['finance_public']='false';			//财务报告是否向Telegram群公开
+
+#特殊签到设置（可能获得流量，也可能减少流量）
+$System_Config['SpecialCheckin'] = '1';				//是否开启特殊签到，留空为不开启，填写任意值为开启
+$System_Config['STrafficMin'] = '-10000';       	//最少流量 单位MB
+$System_Config['STrafficMax'] = '10000';      		//最多流量
 
 
 //沟通设置--------------------------------------------------------------------------------------------
