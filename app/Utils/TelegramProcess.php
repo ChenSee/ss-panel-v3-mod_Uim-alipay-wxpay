@@ -156,7 +156,7 @@ Telegram ID ： ".$telegramID."
 				$bot->sendMessage($message->getChat()->getId(), "什么？", $parseMode = null, $disablePreview = false, $replyToMessageId = $reply_to);
             }
         } else {
-            $bot->sendMessage($message->getChat()->getId(), "咦惹，你还没绑定本站账号呢。快去 69ssr.com/user/edit 这个页面找找 Telegram 绑定指示吧~", $parseMode = null, $disablePreview = false, $replyToMessageId = $reply_to);
+            $bot->sendMessage($message->getChat()->getId(), "咦惹，你还没绑定本站账号呢。快去 资料编辑 这个页面找找 Telegram 绑定指示吧~", $parseMode = null, $disablePreview = false, $replyToMessageId = $reply_to);
         }
     }
 
@@ -272,7 +272,7 @@ Telegram ID ： ".$telegramID."
                                         $bot->sendMessage($message->getChat()->getId(), "登录验证失败，二维码无效。".substr($qrcode_text, 12));
                                     }
                                 } else {
-                                    $bot->sendMessage($message->getChat()->getId(), "登录验证失败呢！因为你还没绑定本站账号呢。快去 69ssr.com/user/edit 这个页面找找 Telegram 绑定指示吧~".substr($qrcode_text, 12));
+                                    $bot->sendMessage($message->getChat()->getId(), "登录验证失败呢！因为你还没绑定本站账号呢。快去 资料编辑 这个页面找找 Telegram 绑定指示吧~".substr($qrcode_text, 12));
                                 }
                             }
 
@@ -288,7 +288,7 @@ Telegram ID ： ".$telegramID."
                                     $bot->sendMessage($message->getChat()->getId(), "登录验证失败，数字无效。");
                                 }
                             } else {
-                                $bot->sendMessage($message->getChat()->getId(), "登录验证失败呢！因为你还没绑定本站账号呢。快去 69ssr.com/user/edit 这个页面找找 Telegram 绑定指示吧~");
+                                $bot->sendMessage($message->getChat()->getId(), "登录验证失败呢！因为你还没绑定本站账号呢。快去 资料编辑 这个页面找找 Telegram 绑定指示吧~");
                             }
                             break;
                         }
