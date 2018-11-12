@@ -82,7 +82,6 @@ class TelegramProcess
 						$user->obfs_param = Config::get('reg_obfs_param');
 						$user->save();
 						$bot->sendMessage($message->getChat()->getId(), "您的加密协议混淆设置已经设置为SS/SSD配置\r\n请更新订阅后使用。", $parseMode = null, $disablePreview = false, $replyToMessageId = $reply_to);
-						break;
 					}
 					//SSR
 					if ($param == "ssr" ) {
