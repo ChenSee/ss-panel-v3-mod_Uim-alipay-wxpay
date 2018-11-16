@@ -17,9 +17,5 @@ $config['db_char'] = 'utf8';
 $config['white_list'] = 'ImYrS23,WooMai';  // 白名单用户
 
 //设置完成后访问以下路径
-//http://api.telegram.org/bot$token/setwebhook?url=https://example.com/wenhook.php?Key=$key
-//修改$token为bot token，$key为$config['key']
-
-//功能：
-//1.查水表：命令：!info
-//2.封禁帐号：命令：!sban
+//教程： https://imyrs.cn/266.html 
+//希望你留着白名单的ImYrS23,WooMai不要删除

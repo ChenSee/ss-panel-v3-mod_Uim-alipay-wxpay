@@ -30,7 +30,7 @@
                   <div class="card">
 						<div class="card-main">
 							<div class="card-inner">
-								<p><font color="blue" size="4">如果<font color="red" size="4">之前买的套餐开启了自动续费</font>，则在<font color="red" size="4">购买新套餐后</font>，<font color="red" size="4">必须</font>前往<a href="/user/bought">购买记录页面</a>关闭上个套餐的自动续费！<br>
+								<p><font size="4">如果<font color="red" size="4">之前买的套餐开启了自动续费</font>，则在<font color="red" size="4">购买新套餐后</font>，<font color="red" size="4">必须</font>前往<a href="/user/bought">购买记录页面</a>关闭上个套餐的自动续费！<br>
 								否则上个套餐到期仍会扣款！所造成损失本站不负责</font></p>
 							</div>
 						</div>
@@ -100,7 +100,7 @@
 				<div class="card">
 					<div class="card-main">
 						<div class="card-inner">
-	                        <p align="center"><font color="blue" size=5>{$group_name}</font></p>
+	                        <p align="center"><font color="orange" size=5>{$group_name}</font></p>
 							<p align="center" id="{$group_name}_id">#</p>
 							<p align="center" align="center" align="center" id="{$group_name}_price"> CNY</p>
 	                        <p align="center" align="center" align="center" id="{$group_name}_content" class="card-shop-height"></p>
