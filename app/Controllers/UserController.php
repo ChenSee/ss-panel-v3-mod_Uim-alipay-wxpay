@@ -1022,8 +1022,16 @@ class UserController extends BaseController
         }
         $shops = Shop::where("status", 1)->orderBy("name")->paginate(15, ['*'], 'page', $pageNum);
         $shops->setPath('/user/shop');
-
-        return $this->view()->assign('shops', $shops)->display('user/shop.tpl');
+		$groups = array();
+        foreach ($shops as $shop) {
+            $shop->group = explode(" - ", $shop->name)[0];
+            $shop->name = explode(" - ", $shop->name)[1];
+            if (!isset($groups[$shop->group])) {
+                $groups[$shop->group] = array();
+            }
+            array_push($groups[$shop->group], $shop);
+        }
+        return $this->view()->assign('groups', $groups)->assign('shops', $shops)->display('user/shop.tpl');
     }
 
     public function CouponCheck($request, $response, $args)
