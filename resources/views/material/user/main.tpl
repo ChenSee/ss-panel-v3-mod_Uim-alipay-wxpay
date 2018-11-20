@@ -289,7 +289,7 @@
 
 
 		.card-shop-height {	
-    		height: 70px;
+    		height: 100px;
 		}
 	</style>
 
