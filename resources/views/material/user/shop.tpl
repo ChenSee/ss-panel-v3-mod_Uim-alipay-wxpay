@@ -42,65 +42,103 @@
 					</div>
 						
             <div class="shop-flex">
-				{$shops->render()}
+				
 				{foreach $shops as $shop}
                   <div class="card">
 					  <div class="card-main">
 								<div class="shop-name">{$shop->name}</div>
-								<div class="shop-price"><code>{$shop->price}</code> 元</div>
+								<div class="shop-price">{$shop->price}</div>
+								<div class="shop-tat">
+									<span>{$shop->bandwidth()}</span> / <span>{$shop->class_expire()}</span>
+								</div>
+								<div class="shop-cube">
+									<div>
+										<div class="cube-detail">
+											<span>Lv.</span>{$shop->user_class()}
+										</div>
+										<div class="cube-title">
+											VIP
+										</div>
+									</div>
+									<div>
+										<div class="cube-detail">
+											{if {$shop->connector()} == '0' }无限制{else}{$shop->connector()}<span> 个</span>{/if}
+										</div>
+										<div class="cube-title">
+											客户端数量
+										</div>
+									</div>
+									<div>
+										<div class="cube-detail">
+											{if {$shop->speedlimit()} == '0' }无限制{else}{$shop->speedlimit()}<span> Mbps</span>{/if}
+										</div>
+										<div class="cube-title">
+											端口速率
+										</div>
+									</div>
+
+								</div>
 								<div class="shop-content">
-									<div>添加流量 <code>{$shop->bandwidth()}</code> G</div>
-									<div>账号等级 <code>{$shop->user_class()}</code> 级</div>
-									<div>账号有效期 <code>{$shop->expire()}</code> 天</div>
-									{if {$shop->reset()} == '0' }
-									<div>无流量周期重置</div>
-									{else}
-									<div>在 <code>{$shop->reset_exp()}</code> 天内，每 <code>{$shop->reset()}</code> 天重置流量为 <code>{$shop->reset_value()}</code> G</div>
-									{/if}
-									{if {$shop->speedlimit()} == '0' }
-									<div>端口速率 <code>无限制</code></div>
-									{else}
-									<div>端口限速 <code>{$shop->speedlimit()}</code> Mbps</div>
-									{/if}
-									{if {$shop->connector()} == '0' }
-									<div>客户端数量 <code>无限制</code></div>
-									{else}
-									<div>客户端限制 <code>{$shop->connector()}</code> 个</div>
-									{/if}
-							    </div>
+									<div class="shop-content-left">账号有效期:</div><div class="shop-content-right">{$shop->expire()}<span>天</span></div>
+									<div class="shop-content-left">重置周期:</div><div class="shop-content-right">{if {$shop->reset()} == '0' }N / A{else}{$shop->reset_exp()}<span>天</span>{/if}</div>
+									<div class="shop-content-left">重置频率:</div><div class="shop-content-right">{if {$shop->reset()} == '0' }N / A{else}{$shop->reset_value()}<span>G</span> / {$shop->reset()}<span>天</span>{/if}</div>
+								</div>
+								<div class="shop-content-extra">
+									{foreach $shop->content_extra() as $service}
+									<div><span class="icon">{$service[0]}</span> {$service[1]}</div>
+									{/foreach}
+								</div>
 								<a class="btn btn-brand-accent shop-btn" href="javascript:void(0);" onClick="buy('{$shop->id}',{$shop->auto_renew})">购买</a>
 					  </div>
 				  </div>
 				{/foreach}
-				{$shops->render()}
+				
 				<div class="flex-fix3"></div>
 				<div class="flex-fix4"></div>
 			</div>
 
-
-					<div class="table-responsive shop-table">
-						{$shops->render()}
-						<table class="table ">
-                            <tr>
-                                <th>套餐</th>
-								<th>价格</th>
-								<th>套餐详情</th>
-                              <th>操作</th>
-                                
-                            </tr>
-                            {foreach $shops as $shop}
-                            <tr>
-                                <td>{$shop->name}</td>
-								<td>{$shop->price} 元</td>
-                                <td>{$shop->content()}</td>
-                                <td>
-                                    <a class="btn btn-brand-accent" href="javascript:void(0);" onClick="buy('{$shop->id}',{$shop->auto_renew})">购买</a>
-                                </td>
-                            </tr>
-                            {/foreach}
-                        </table>
-						{$shops->render()}
+            <div class="shop-table">
+				
+					{foreach $shops as $shop}
+					<div class="shop-gridarea">
+                        <div class="card">
+								<div>
+									<div class="shop-name"> <span>{$shop->name}</span></div>
+									<div class="card-tag tag-gold">VIP {$shop->user_class()}</div>
+									<div class="card-tag tag-orange">¥ {$shop->price}</div>
+									<div class="card-tag tag-cyan">{$shop->bandwidth()} G</div>
+									<div class="card-tag tag-blue">{$shop->class_expire()} 天</div>
+								</div>
+								<div>
+								<i class="material-icons">expand_more</i>
+								</div>	
+						</div>
+						<a class="btn btn-brand-accent shop-btn" href="javascript:void(0);" onClick="buy('{$shop->id}',{$shop->auto_renew})">购买</a>
+						
+						<div class="shop-drop dropdown-area">
+							<div class="card-tag tag-black">账号有效期</div> <div class="card-tag tag-blue">{$shop->expire()} 天</div>
+							{if {$shop->reset()} == '0' }
+							<div class="card-tag tag-black">重置周期</div> <div class="card-tag tag-blue">N/A</div>
+							{else}
+							<div class="card-tag tag-black">重置周期</div> <div class="card-tag tag-blue">{$shop->reset_exp()} 天</div>
+							<div class="card-tag tag-black">重置频率</div><div class="card-tag tag-blue">{$shop->reset_value()}G/{$shop->reset()}天</div>
+							{/if}
+								{if {$shop->speedlimit()} == '0' }
+								<div class="card-tag tag-black">端口速率</div> <div class="card-tag tag-blue">无限制</div>
+								{else}
+								<div class="card-tag tag-black">端口限速</div> <div class="card-tag tag-blue">{$shop->speedlimit()} Mbps</div>
+								{/if}
+								{if {$shop->connector()} == '0' }
+								<div class="card-tag tag-black">客户端数量</div> <div class="card-tag tag-blue">无限制</div>
+								{else}
+								<div class="card-tag tag-black">客户端限制</div> <div class="card-tag tag-blue">{$shop->connector()} 个</div>
+								{/if}
+						</div>
 					</div>
+					{/foreach}
+				
+            </div>
+					
 					
 					
 					<div aria-hidden="true" class="modal modal-va-middle fade" id="coupon_modal" role="dialog" tabindex="-1">
@@ -194,57 +232,30 @@ function buy(id,auto) {
 }
 
 ;(function(){
-    var nodeDefaultUI = localStorage.getItem("tempUIshop");
-	var elShopCard = $(".shop-flex");
-	var elShopTable = $(".shop-table");
-	nodeDefaultUI = JSON.parse(nodeDefaultUI);
-	if (!nodeDefaultUI) {
-		elShopCard.css("display","flex");
-	} else {
-		elShopCard.css("display",nodeDefaultUI["cardDisplay"]);
-	    elShopCard.removeClass("node-fade").addClass(nodeDefaultUI["cardFade"]);
-	    elShopTable.css("display",nodeDefaultUI["tableDisplay"]);
-	    elShopTable.removeClass("node-fade").addClass(nodeDefaultUI["tableFade"]);
-	}
 	
+	//UI切换
+	let elShopCard = $$.querySelector(".shop-flex");
+	let elShopTable = $$.querySelector(".shop-table");
+	
+	let switchToCard = new UIswitch('switch-cards',elShopTable,elShopCard,'flex','tempshop');
+	switchToCard.listenSwitch();
+    
+	let switchToTable = new UIswitch('switch-table',elShopCard,elShopTable,'flex','tempshop');
+	switchToTable.listenSwitch();
 
-	$("#switch-cards").click(function (){
-        elShopTable.addClass("node-fade");
-		setTimeout(function(){
-		      elShopCard.css("display","flex");
-              elShopTable.css("display","none");
-		},250);	
-		setTimeout(function(){
-		      elShopCard.removeClass("node-fade");
-		},270);
-		var defaultUI = {
-			"cardFade":"",
-			"cardDisplay":"flex",
-			"tableFade":"node-fade",
-			"tableDisplay":"none"
-		};
-		defaultUI = JSON.stringify(defaultUI);
-		localStorage.setItem("tempUIshop",defaultUI);
-    });
+	switchToCard.setDefault();
+	switchToTable.setDefault();
+	
+	//手风琴
+	let dropDownButton = document.querySelectorAll('.shop-table .card');
+	let dropDownArea = document.querySelectorAll('.dropdown-area');
+	let arrows = document.querySelectorAll('.shop-table .card i');
+	
+	for (let i=0;i<dropDownButton.length;i++) {
+		rotatrArrow(dropDownButton[i],arrows[i]);
+		custDropdown(dropDownButton[i], dropDownArea[i]);
+	}
 
-    $("#switch-table").click(function (){
-         elShopCard.addClass("node-fade");
-		 setTimeout(function(){
-			elShopTable.css("display","block");
-            elShopCard.css("display","none");
-		},250);	
-		 setTimeout(function(){
-			  elShopTable.removeClass("node-fade");
-	    },270);
-		var defaultUI = {
-			"cardFade":"node-fade",
-			"cardDisplay":"none",
-			"tableFade":"",
-			"tableDisplay":"block"
-		};
-		defaultUI = JSON.stringify(defaultUI);
-		localStorage.setItem("tempUIshop",defaultUI);
-    });
 })();
     
 

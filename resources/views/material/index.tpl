@@ -16,8 +16,10 @@
         <link rel="shortcut icon" href="/favicon.ico"/>
         <link rel="bookmark" href="/favicon.ico"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
-		<link rel="stylesheet" href="/assets/css/main.css"/>
-        <noscript><link rel="stylesheet" href="/assets/css/noscript.css" /></noscript>   
+	<link rel="stylesheet" href="/assets/css/main.css"/>
+        <noscript><link rel="stylesheet" href="/assets/css/noscript.css" /></noscript>
+	<link href="//unpkg.com/nprogress@0.2.0/nprogress.css" rel="stylesheet" />
+    <script src="//unpkg.com/nprogress@0.2.0/nprogress.js"></script>
   </head>
   
        <body>
@@ -51,7 +53,6 @@
                                 <li><a href="#1">简介</a></li>
 					            <li><a href="/user">用户中心</a></li>
 								<li><a href="/user/logout">退出登录</a></li>
-								<li><a href="#5">下载</a></li>
                         </ul>
 						</nav>
                               {else}
@@ -62,7 +63,7 @@
 								如果想自定义文本请删除下面这段script代码,格式为
 								<p>自定义文本</p>
 								-->
-								<script src="https://api.lwl12.com/hitokoto/main/get?encode=js&charset=utf-8"></script><div id="lwlhitokoto"><script>lwlhitokoto()</script></div>
+								<script type="text/javascript" src="https://api.lwl12.com/hitokoto/v1?encode=js&charset=utf-8"></script><div id="lwlhitokoto"><script>lwlhitokoto()</script></div>
                           </div>
                       </div>	
                               <nav>
@@ -70,7 +71,6 @@
                                <li><a href="#1">简介</a></li>
 								<li><a href="/auth/login">登录</a></li>
 								<li><a href="/auth/register">注册</a></li>
-                              	<li><a href="#5">下载</a></li>
                               
                            </ul>
 						</nav>
@@ -101,19 +101,6 @@
                                     </li>
                                   </ul>
                                   </article>
-                      <!--标签5开始-->
-	                        <article id="5">
-							<h2 class="major">软件下载</h2>
-							<ul>
-							  <li><a href="/ssr-download/ssr-win.7z" class="icon fa-windows"><span class="label"></span> Windows</a></li>
-							  <li><a href="/ssr-download/ssr-mac.dmg" class="icon fa-apple"><span class="label">Mac</span> Mac</a></li>
-							  <li><a href="/ssr-download/ssr-android.apk" class="icon fa-android"><span class="label">Android</span> Android</a></li>
-							  <li><a href="#ios" class="icon fa-apple"><span class="label">iOS</span> iOS</a></li>
-                              <li><a href="/ssr-download/SSTap.7z" class="icon fa-gamepad"><span class="label">Win游戏专用</span> Win游戏专用</a></li>
-                            
-	                         </ul>
-                             </article>
-                            <!--标签5开始-->
                       	<article id="login">  
 		
 								<h2 class="major">登录</h2>
@@ -151,7 +138,7 @@
                               </div>
                      <!-- 版权底部 -->
                       <footer id="footer">
-                   <p class="copyright">&copy;{$config["appStartTime"]}-{date("Y")} {$config["appName"]}</p>
+                   <p class="copyright">&copy;{date("Y")} {$config["appName"]}</p>
                       </footer>
               <!-- 版权结束 -->
 			 </div>
@@ -173,5 +160,23 @@ try{
 };
  
 </script>
-	</body>
+<!-- 進度條 -->
+<script>
+       $(function() {
+       $(window).load(function(){
+	   NProgress.done();
+		});
+       NProgress.set(0.0);
+       NProgress.configure({ showSpinner: false });
+       NProgress.configure({ minimum: 0.4 });
+       NProgress.configure({ easing: 'ease', speed: 1200 });
+       NProgress.configure({ trickleSpeed: 200 });
+       NProgress.configure({ trickleRate: 0.2, trickleSpeed: 1200 });
+       NProgress.inc();
+       $(window).ready(function(){
+	   NProgress.start();
+		});
+})
+</script>
+</body>
 </html>

@@ -29,8 +29,6 @@ class XCat
     public function boot()
     {
         switch ($this->argv[1]) {
-            case("install"):
-                return $this->install();
             case("alipay"):
                 return (new ChenPay())->AliPayListen();
             case("wxpay"):
@@ -75,8 +73,6 @@ class XCat
                 return Job::DailyJob();
             case("checkjob"):
                 return Job::CheckJob();
-            case("syncduoshuo"):
-                return Job::SyncDuoshuo();
             case("userga"):
                 return Job::UserGa();
             case("backup"):
@@ -92,7 +88,7 @@ class XCat
 	        case("resetAllPort"):
                 return $this->resetAllPort();
 			case("update"):
-			    return Update::update();
+			    return Update::update($this);
 			default:
                 return $this->defaultAction();
         }
@@ -163,11 +159,6 @@ class XCat
         }
     }
 
-    public function install()
-    {
-        echo "x cat will install ss-panel v3...../n";
-    }
-
     public function initdownload()
     {
         system('git clone https://github.com/xcxnig/ssr-download.git '.BASE_PATH."/public/ssr-download/", $ret);
@@ -214,14 +205,10 @@ class XCat
             $user->node_speedlimit=0;
             $user->theme=Config::get('theme');
 
-
-
             $ga = new GA();
             $secret = $ga->createSecret();
             $user->ga_token=$secret;
             $user->ga_enable=0;
-
-
 
             if ($user->save()) {
                 echo "Successful/添加成功!\n";
@@ -261,10 +248,10 @@ class XCat
     public function initQQWry()
     {
         echo("downloading....");
-        $copywrite = file_get_contents("https://github.com/esdeathlove/qqwry-download/raw/master/copywrite.rar");
+        $copywrite = file_get_contents("https://qqwry.mirror.noc.one/copywrite.rar");
         $newmd5 = md5($copywrite);
         file_put_contents(BASE_PATH."/storage/qqwry.md5", $newmd5);
-        $qqwry = file_get_contents("https://github.com/esdeathlove/qqwry-download/raw/master/qqwry.rar");
+        $qqwry = file_get_contents("https://qqwry.mirror.noc.one/qqwry.rar");
         if ($qqwry != "") {
             $key = unpack("V6", $copywrite)[6];
             for ($i=0; $i<0x200; $i++) {
