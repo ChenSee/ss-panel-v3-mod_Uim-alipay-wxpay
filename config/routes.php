@@ -77,7 +77,6 @@ $app->get('/yft/notify', 'App\Services\Gateway\YftPay:notify');//yft uses GET
 $app->get('/tos', 'App\Controllers\HomeController:tos');
 $app->get('/staff', 'App\Controllers\HomeController:staff');
 $app->post('/telegram_callback', 'App\Controllers\HomeController:telegram');
-$app->get('/globalconfig', 'App\Controllers\VueController:getGlobalConfig');
 
 // User Center
 $app->group('/user', function () {
@@ -102,8 +101,6 @@ $app->group('/user', function () {
     $this->get('/shop', 'App\Controllers\UserController:shop');
     $this->post('/coupon_check', 'App\Controllers\UserController:CouponCheck');
     $this->post('/buy', 'App\Controllers\UserController:buy');
-    $this->get('/getuserinfo', 'App\Controllers\UserController:getUserinfo');
-
 
     // Relay Mange
     $this->get('/relay', 'App\Controllers\RelayController:index');
@@ -152,10 +149,10 @@ $app->group('/user', function () {
     $this->post('/gaset', 'App\Controllers\UserController:GaSet');
     $this->get('/gareset', 'App\Controllers\UserController:GaReset');
     $this->get('/telegram_reset', 'App\Controllers\UserController:telegram_reset');
+    $this->get('/discord_reset', 'App\Controllers\UserController:discord_reset');
     $this->post('/resetport', 'App\Controllers\UserController:ResetPort');
     $this->post('/specifyport', 'App\Controllers\UserController:SpecifyPort');
     $this->post('/pacset', 'App\Controllers\UserController:PacSet');
-    $this->get('/getiosconf', 'App\Controllers\UserController:GetIosConf');
     $this->post('/unblock', 'App\Controllers\UserController:Unblock');
     $this->get('/bought', 'App\Controllers\UserController:bought');
     $this->delete('/bought', 'App\Controllers\UserController:deleteBoughtGet');
@@ -370,6 +367,21 @@ $app->group("/doiam", function () {
     $this->get("/return/alipay", "App\Services\Payment:returnHTML");
     $this->post("/status", "App\Services\Payment:getStatus");
 });
+
+// Vue
+
+$app->get('/logout', 'App\Controllers\VueController:vuelogout');
+$app->get('/globalconfig', 'App\Controllers\VueController:getGlobalConfig');
+$app->get('/getuserinfo', 'App\Controllers\VueController:getUserInfo');
+$app->post('/getuserinviteinfo', 'App\Controllers\VueController:getUserInviteInfo');
+$app->get('/getusershops', 'App\Controllers\VueController:getUserShops');
+$app->get('/getallresourse', 'App\Controllers\VueController:getAllResourse');
+$app->get('/getnewsubtoken', 'App\Controllers\VueController:getNewSubToken');
+$app->get('/getnewinvotecode', 'App\Controllers\VueController:getNewInviteCode');
+$app->get('/gettransfer', 'App\Controllers\VueController:getTransfer');
+$app->get('/getCaptcha', 'App\Controllers\VueController:getCaptcha');
+$app->post('/getChargeLog', 'App\Controllers\VueController:getChargeLog');
+$app->get('/getnodelist', 'App\Controllers\VueController:getNodeList');
 
 /**
  * chenPay

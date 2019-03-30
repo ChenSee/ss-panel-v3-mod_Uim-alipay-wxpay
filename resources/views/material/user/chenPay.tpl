@@ -47,9 +47,6 @@
                                                                                      width="45"></a>
         {/if}
     </div>
-    <div class="form-group pull-right">
-        <img src="/images/qianbai-2.png" height="205"/>
-    </div>
 </div>
 <div aria-hidden="true" class="modal modal-va-middle fade" id="AliPayReadyToPay" role="dialog"
      tabindex="-1">
@@ -159,11 +156,6 @@
                     },
                     success: function (data) {
                         if (data.ret) {
-                            // if (data.url) {
-                            //     if ($type == 2)
-                            //         $('.pay').attr('href', $wxpayApp).children('img').attr('src', $zxing + data.url);
-                            //     else $('.pay').attr('href', $alipay + data.url).children('img').attr('src', $zxing + data.url);
-                            // }
                             if (data.status == 1) {
                                 close('充值成功！');
                                 setTimeout(function () {
