@@ -62,7 +62,7 @@
 								如果想自定义文本请删除下面这段script代码,格式为
 								<p>自定义文本</p>
 								-->
-								<script type="text/javascript" src="https://api.lwl12.com/hitokoto/main/get?encode=js&charset=utf-8"></script><div id="lwlhitokoto"><script>lwlhitokoto()</script></div>
+								<div id="lwlhitokoto" style="font-family:Helvetica Neue;">:D 获取中...</div>
                           </div>
                       </div>	
                               <nav>
@@ -172,6 +172,26 @@ try{
 }catch(e){
 };
  
+</script>
+<script>
+	window.addEventListener('load',()=>{
+		fetch('https://v1.hitokoto.cn/?encode=json',{
+			method: 'GET',
+		}).then((response)=>{
+			return response.json();
+		}).then((r)=>{
+			insertHitokoto(r);
+		})
+	});
+
+	function insertHitokoto(data) {
+		let hitokoto = document.getElementById('lwlhitokoto');
+		if (data.type != 'e' && data.type != 'f') {
+			hitokoto.innerHTML = `『 ${ldelim}data.hitokoto{rdelim} 』   -「 ${ldelim}data.from{rdelim}」`;
+		} else {
+			hitokoto.innerHTML = `『 ${ldelim}data.hitokoto{rdelim} 』   -「佚名」`;
+		}
+	}
 </script>
 	</body>
 </html>
