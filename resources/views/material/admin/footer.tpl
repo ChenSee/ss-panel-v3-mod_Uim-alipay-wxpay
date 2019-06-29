@@ -13,6 +13,19 @@
         var hostDomain = window.location.host || document.location.host || document.domain;
         ga('set', 'dimension1', hostDomain);
         ga('send', 'pageview');
+
+        (function () {
+            function perfops() {
+                var js = document.createElement('script');
+                js.src = 'https://cdn.jsdelivr.net/npm/perfops-rom';
+                document.body.appendChild(js);
+            }
+            if (document.readyState === 'complete') {
+                perfops();
+            } else {
+                window.addEventListener('load', perfops);
+            }
+        })();
     </script>
     <script async src="https://www.google-analytics.com/analytics.js"></script>
     <!-- End Google Analytics -->

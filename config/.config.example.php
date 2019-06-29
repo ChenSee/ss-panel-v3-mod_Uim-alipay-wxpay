@@ -29,7 +29,7 @@ $System_Config['db_password'] = 'sspanel';						//用户名对应的密码
 
 
 //邮件设置--------------------------------------------------------------------------------------------
-$System_Config['mailDriver'] = 'none';	//发送邮件方式：none / mailgun / smtp / sendgrid 
+$System_Config['mailDriver'] = 'none';	//发送邮件方式：none / mailgun / smtp / sendgrid
 $System_Config['sendPageLimit']= 50;	//发信分页 解决大站发公告超时问题
 
 # mailgun
@@ -94,15 +94,16 @@ $System_Config['email_verify_iplimit']='10';		//验证码有效期内，单IP可
 
 //已注册用户设置---------------------------------------------------------------------------------------
 #基础
-$System_Config['checkinMin'] = '1';				//用户签到最少流量 单位MB
+$System_Config['checkinMin'] = '1';			//用户签到最少流量 单位MB
 $System_Config['checkinMax'] = '50';			//用户签到最多流量
-$System_Config['auto_clean_uncheck_days']='-1';	//自动清理多少天没签到的0级用户，小于等于0时关闭
-$System_Config['auto_clean_unused_days']='-1';	//自动清理多少天没使用的0级用户，小于等于0时关闭
+$System_Config['auto_clean_uncheck_days']='-1';	        //自动清理多少天没签到的0级用户，小于等于0时关闭
+$System_Config['auto_clean_unused_days']='-1';	        //自动清理多少天没使用的0级用户，小于等于0时关闭
 $System_Config['auto_clean_min_money']='1';		//余额低于多少的0级用户可以被清理
 $System_Config['code_payback']='20';			//充值返利百分比
-$System_Config['invite_gift']='2';				//邀请新用户获得流量奖励，单位G
-$System_Config['enable_bought_reset']='true';	//购买时是否重置流量
-$System_Config['port_price']='-1';				//用户随机重置端口所需要的价格，价格小于0时视为不开放购买
+$System_Config['invite_gift']='2';			//邀请新用户获得流量奖励，单位G
+$System_Config['enable_bought_reset']='true';	        //购买时是否重置流量
+$System_Config['enable_bought_extend']='true';	        //购买时是否延长等级期限（同等级配套）
+$System_Config['port_price']='-1';			//用户随机重置端口所需要的价格，价格小于0时视为不开放购买
 $System_Config['port_price_specify']='-1';		//用户指明钦定端口所需要的价格，价格小于0时视为不开放购买
 
 #高级
@@ -120,7 +121,7 @@ $System_Config['finance_public']='false';			//财务报告是否向群公开
 $System_Config['enable_welcome_message']='true';	//机器人发送欢迎消息
 
 #Discord
-$System_Config['enable_discord']='false';	//是否开启Discord bot
+$System_Config['enable_discord']='false';	//是否开启Discord bot（仍未完成）
 $System_Config['discord_token']='';			//Discord bot,bot 的 token，在 https://discordapp.com/developers/applications/ 申请
 
 
@@ -141,8 +142,17 @@ $System_Config['telegram_request_token']='';		//Telegram 机器人请求Key，�
 $System_Config['enable_mylivechat']='false';		//是否开启客服系统
 $System_Config['mylivechat_id']='null';			//客服系统ID
 
+# PushBear  基于微信模板的向关注了二维码的用户以微信方式推送消息 https://pushbear.ftqq.com/
+$System_Config['usePushBear'] = 'false';		// true 启用	false 禁用
+$System_Config['PushBear_sendkey'] = '';	//请填写您在PushBear获取的sendkey  请仔细检查勿粘贴错
+
 #工单系统设置
 $System_Config['enable_ticket']='true';		//是否开启工单系统
+$System_Config['mail_ticket']='true';		//是否开启工单邮件提醒
+
+# Server酱  用户提交新工单或者回复工单时用微信提醒机场主 http://sc.ftqq.com/
+$System_Config['useScFtqq'] = 'false';		//是否开启工单Server酱提醒
+$System_Config['ScFtqq_SCKEY'] = '';	//请填写您在Server酱获取的SCKEY  请仔细检查勿粘贴错
 
 #管理员联系方式设置
 $System_Config['enable_admin_contact']='false';			//是否开启管理员联系方式
@@ -167,7 +177,7 @@ $System_Config['enable_checkin_captcha'] = 'false';	//启用签到验证码
 
 
 //支付系统设置----------------------------------------------------------------------------------------
-#取值 none | codepay | trimepay | f2fpay | yftpay | chenAlipay | paymentwall | spay
+#取值 none | codepay | trimepay | f2fpay | chenAlipay | paymentwall | spay |tomatopay
 $System_Config['payment_system']='none';
 
 #codepay码支付
@@ -191,10 +201,6 @@ $System_Config['pmw_height']='350px';
 $System_Config['alipay_id']='';
 $System_Config['alipay_key']='';
 $System_Config['amount']=[2,23,233,2333,23333];		//充值金额选项设定
-
-#yftpay,https://pay.anypay.me/
-$System_Config['yft_secret']='';
-$System_Config['yft_accesskey']='';
 
 #alipay,zfbjk.com
 $System_Config['zfbjk_pid']='';
@@ -234,6 +240,8 @@ $System_Config['detect_gfw_count']='3';												//尝试次数
 
 #离线检测
 $System_Config['enable_detect_offline']='true';
+#离线检测是否推送到Server酱 请配置好上文的Server配置
+$System_Config['enable_detect_offline_useScFtqq']='true';
 
 
 //V2Ray相关设置------------------------------------------------------------------------------------------
@@ -245,9 +253,10 @@ $System_Config['v2ray_level']='0';
 //以下所有均为高级设置（一般用不上，不用改---------------------------------------------------------------------
 #杂项
 $System_Config['enable_login_bind_ip']='false';		//是否将登陆线程和IP绑定
+$System_Config['rememberMeDuration']='7';           //登录时记住账号时长天数
 $System_Config['authDriver'] = 'cookie';			//不能更改此项
-$System_Config['pwdMethod'] = 'sha256';				//密码加密 可选 md5, sha256, bcrypt, argon2i（argon2i需要至少php7.2）
-$System_Config['salt'] = '';						//推荐配合 md5/sha256 用，argon2i/bcrypt 强烈建议不要自己设置 salt。只要不设置，它会自动创建安全的盐值
+$System_Config['pwdMethod'] = 'sha256';				//密码加密 可选 md5, sha256, bcrypt, argon2i, argon2id（argon2i需要至少php7.2）
+$System_Config['salt'] = '';						//推荐配合 md5/sha256， bcrypt/argon2i/argon2id 会忽略此项
 $System_Config['sessionDriver'] = 'cookie';			//可选: cookie,redis
 $System_Config['cacheDriver'] = 'cookie';			//可选: cookie,redis
 $System_Config['tokenDriver'] = 'db';				//可选: db,redis
@@ -285,7 +294,7 @@ $System_Config['radius_secret']='';					//Radius连接密钥
 $System_Config['enable_cloudxns']='false';			//是否开启Cloudxns
 $System_Config['cloudxns_apikey']='';				//自己去 cloudxns.net 申请
 $System_Config['cloudxns_apisecret']='';
-$System_Config['cloudxns_domain']='zhaoj.in';		//你的域名
+$System_Config['cloudxns_domain']='';		//你的域名
 
 #Cloudflare
 $System_Config['cloudflare_enable']='false';										//是否开启 Cloudflare 解析

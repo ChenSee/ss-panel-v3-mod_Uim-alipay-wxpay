@@ -187,7 +187,7 @@
           </div>
           <div class="user-btngroup pure-g">
             <div class="pure-u-1-2 btngroup-left">
-              <uim-dropdown>
+              <uim-dropdown show-arrow>
                 <template #dpbtn-content>
                   <transition name="fade" mode="out-in">
                     <div :key="currentCardComponent">{{menuOptions[currentCardComponentIndex].name}}</div>
@@ -215,7 +215,6 @@
               :is="currentCardComponent"
               v-on:resourseTransTrigger="showTransition('userResourseTrans')"
               :baseURL="baseUrl"
-              :annC="ann"
               class="card margin-nobottom"
             >
               <button
@@ -311,14 +310,6 @@ export default {
   data: function() {
     return {
       userLoadState: "beforeload",
-      ann: {
-        content: "",
-        date: "",
-        id: "",
-        markdown: ""
-      },
-      baseUrl: "",
-      mergeSub: "false",
       toolTips: {
         mu0: false,
         mu1: false,
@@ -448,7 +439,6 @@ export default {
         resolve();
       });
       promise.then(r => {
-        window.console.log(r);
         setTimeout(() => {
           this.setSignSet({ isSignShow: true });
         }, 500);
@@ -459,35 +449,40 @@ export default {
     let self = this;
     this.userLoadState = "loading";
 
-    _get("/getuserinfo", "include")
-      .then(r => {
-        if (r.ret === 1) {
-          window.console.log(r.info);
-          this.setUserCon(r.info.user);
-          this.setUserSettings(this.userCon);
-          window.console.log(this.userCon);
-          if (r.info.ann) {
-            this.ann = r.info.ann;
+    if (this.userCon === "") {
+      _get("/getuserinfo", "include")
+        .then(r => {
+          if (r.ret === 1) {
+            window.console.log(r.info);
+            this.setUserCon(r.info.user);
+            this.setUserSettings(this.userCon);
+            window.console.log(this.userCon);
+            if (r.info.ann) {
+              this.setAnn(r.info.ann);
+            }
+            this.setAllBaseCon({
+              subUrl: r.info.subUrl,
+              ssrSubToken: r.info.ssrSubToken,
+              iosAccount: r.info.iosAccount,
+              iosPassword: r.info.iosPassword,
+              displayIosClass: r.info.displayIosClass
+            });
+            this.setBaseUrl(r.info.baseUrl);
+            this.setMergeSub(r.info.mergeSub);
+          } else if (r.ret === -1) {
+            this.ajaxNotLogin();
           }
-          this.setAllBaseCon({
-            subUrl: r.info.subUrl,
-            ssrSubToken: r.info.ssrSubToken,
-            iosAccount: r.info.iosAccount,
-            iosPassword: r.info.iosPassword,
-            displayIosClass: r.info.displayIosClass
-          });
-          this.baseUrl = r.info.baseUrl;
-          this.mergeSub = r.info.mergeSub;
-        } else if (r.ret === -1) {
-          this.ajaxNotLogin();
-        }
-      })
-      .then(r => {
-        setTimeout(() => {
-          self.userLoadState = "loaded";
-          this.showSigner();
-        }, 1000);
-      });
+        })
+        .then(r => {
+          setTimeout(() => {
+            self.userLoadState = "loaded";
+            this.showSigner();
+          }, 500);
+        });
+    } else {
+      self.userLoadState = "loaded";
+      this.showSigner();
+    }
   },
   beforeRouteLeave(to, from, next) {
     if (

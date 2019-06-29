@@ -50,29 +50,19 @@ use App\Services\Mail;
  */
 class UserController extends BaseController
 {
-    private $user;
-
-    public function __construct()
-    {
-        $this->user = Auth::getUser();
-    }
-
     public function index($request, $response, $args)
     {
-
-        $user = $this->user;
         $ssr_sub_token = LinkController::GenerateSSRSubCode($this->user->id, 0);
 
         $GtSdk = null;
         $recaptcha_sitekey = null;
-        if (Config::get('enable_checkin_captcha') == 'true'){
-            switch(Config::get('captcha_provider'))
-            {
+        if (Config::get('enable_checkin_captcha') == 'true') {
+            switch (Config::get('captcha_provider')) {
                 case 'recaptcha':
                     $recaptcha_sitekey = Config::get('recaptcha_sitekey');
                     break;
                 case 'geetest':
-                    $uid = time().rand(1, 10000) ;
+                    $uid = time() . rand(1, 10000);
                     $GtSdk = Geetest::get($uid);
                     break;
             }
@@ -83,10 +73,10 @@ class UserController extends BaseController
 
         return $this->view()
             ->assign('ssr_sub_token', $ssr_sub_token)
-            ->assign('display_ios_class',Config::get('display_ios_class'))
-            ->assign('display_ios_topup',Config::get('display_ios_topup'))
-            ->assign('ios_account',Config::get('ios_account'))
-            ->assign('ios_password',Config::get('ios_password'))
+            ->assign('display_ios_class', Config::get('display_ios_class'))
+            ->assign('display_ios_topup', Config::get('display_ios_topup'))
+            ->assign('ios_account', Config::get('ios_account'))
+            ->assign('ios_password', Config::get('ios_password'))
             ->assign('ann', $Ann)
             ->assign('geetest_html', $GtSdk)
             ->assign('mergeSub', Config::get('mergeSub'))
@@ -156,7 +146,6 @@ class UserController extends BaseController
         }
         return FALSE;
     }
-
 
 
     public function code_check($request, $response, $args)
@@ -454,99 +443,93 @@ class UserController extends BaseController
         return $this->view()->assign('point_node', $point_node)->assign('prefix', $prefix[0])->assign('id', $id)->display('user/nodeajax.tpl');
     }
 
-	public function node($request, $response, $args)
+    public function node($request, $response, $args)
     {
         $user = Auth::getUser();
         $nodes = Node::where('type', 1)->orderBy('node_class')->orderBy('name')->get();
         $relay_rules = Relay::where('user_id', $this->user->id)->orwhere('user_id', 0)->orderBy('id', 'asc')->get();
-		if (!Tools::is_protocol_relay($user)) {
+        if (!Tools::is_protocol_relay($user)) {
             $relay_rules = array();
         }
 
-		$array_nodes=array();
-		$nodes_muport = array();
+        $array_nodes = array();
+        $nodes_muport = array();
 
-		foreach($nodes as $node){
-			if($node->node_group!=$user->node_group && $node->node_group!=0){
-				continue;
-			}
-			if ($node->sort == 9) {
+        foreach ($nodes as $node) {
+            if ($node->node_group != $user->node_group && $node->node_group != 0) {
+                continue;
+            }
+            if ($node->sort == 9) {
                 $mu_user = User::where('port', '=', $node->server)->first();
                 $mu_user->obfs_param = $this->user->getMuMd5();
                 array_push($nodes_muport, array('server' => $node, 'user' => $mu_user));
                 continue;
             }
-			$array_node=array();
+            $array_node = array();
 
-			$array_node['id']=$node->id;
-			$array_node['class']=$node->node_class;
-            $array_node['name']=$node->name;
+            $array_node['id'] = $node->id;
+            $array_node['class'] = $node->node_class;
+            $array_node['name'] = $node->name;
             if ($node->sort == 13) {
-                $server = explode(';', $node->server);
-                $array_node['server']=$server[1];
+                $server = Tools::ssv2Array($node->server);
+                $array_node['server'] = $server['add'];
             } else {
-                $array_node['server']=$node->server;
+                $array_node['server'] = $node->server;
             }
-			$array_node['sort']=$node->sort;
-			$array_node['info']=$node->info;
-			$array_node['mu_only']=$node->mu_only;
-			$array_node['group']=$node->node_group;
+            $array_node['sort'] = $node->sort;
+            $array_node['info'] = $node->info;
+            $array_node['mu_only'] = $node->mu_only;
+            $array_node['group'] = $node->node_group;
 
             $array_node['raw_node'] = $node;
-			$regex = Config::get('flag_regex');
+            $regex = Config::get('flag_regex');
             $matches = array();
             preg_match($regex, $node->name, $matches);
             if (isset($matches[0])) {
-				$array_node['flag'] = $matches[0].'.png';
-            }
-			else {
+                $array_node['flag'] = $matches[0] . '.png';
+            } else {
                 $array_node['flag'] = 'unknown.png';
             }
 
-			$node_online=$node->isNodeOnline();
-			if($node_online===null){
-				$array_node['online']=0;
-			}
-			else if($node_online===true){
-				$array_node['online']=1;
-			}
-			else if($node_online===false){
-				$array_node['online']=-1;
-			}
+            $node_online = $node->isNodeOnline();
+            if ($node_online === null) {
+                $array_node['online'] = 0;
+            } else if ($node_online === true) {
+                $array_node['online'] = 1;
+            } else if ($node_online === false) {
+                $array_node['online'] = -1;
+            }
 
             if (in_array($node->sort, array(0, 7, 8, 10, 11, 12, 13))) {
-                $array_node['online_user']=$node->getOnlineUserCount();
+                $array_node['online_user'] = $node->getOnlineUserCount();
             } else {
-                $array_node['online_user']=-1;
+                $array_node['online_user'] = -1;
             }
 
-			$nodeLoad = $node->getNodeLoad();
+            $nodeLoad = $node->getNodeLoad();
             if (isset($nodeLoad[0]['load'])) {
                 $array_node['latest_load'] = ((explode(" ", $nodeLoad[0]['load']))[0]) * 100;
-            }
-			else {
+            } else {
                 $array_node['latest_load'] = -1;
             }
 
             $array_node['traffic_used'] = (int)Tools::flowToGB($node->node_bandwidth);
             $array_node['traffic_limit'] = (int)Tools::flowToGB($node->node_bandwidth_limit);
-			if($node->node_speedlimit==0.0){
-				$array_node['bandwidth']=0;
-			}
-			else if($node->node_speedlimit>=1024.00){
-				$array_node['bandwidth']=round($node->node_speedlimit/1024.00,1).'Gbps';
-			}
-			else{
-				$array_node['bandwidth']=$node->node_speedlimit.'Mbps';
-			}
+            if ($node->node_speedlimit == 0.0) {
+                $array_node['bandwidth'] = 0;
+            } else if ($node->node_speedlimit >= 1024.00) {
+                $array_node['bandwidth'] = round($node->node_speedlimit / 1024.00, 1) . 'Gbps';
+            } else {
+                $array_node['bandwidth'] = $node->node_speedlimit . 'Mbps';
+            }
 
-			$array_node['traffic_rate']=$node->traffic_rate;
-			$array_node['status']=$node->status;
+            $array_node['traffic_rate'] = $node->traffic_rate;
+            $array_node['status'] = $node->status;
 
-			array_push($array_nodes,$array_node);
-		}
-		return $this->view()->assign('nodes', $array_nodes)->assign('nodes_muport', $nodes_muport)->assign('relay_rules', $relay_rules)->assign('tools', new Tools())->assign('user', $user)->registerClass("URL", "App\Utils\URL")->display('user/node.tpl');
-	}
+            array_push($array_nodes, $array_node);
+        }
+        return $this->view()->assign('nodes', $array_nodes)->assign('nodes_muport', $nodes_muport)->assign('relay_rules', $relay_rules)->assign('tools', new Tools())->assign('user', $user)->registerClass("URL", "App\Utils\URL")->display('user/node.tpl');
+    }
 
 
     public function node_old($request, $response, $args)
@@ -830,7 +813,7 @@ class UserController extends BaseController
         $code = InviteCode::where('user_id', $this->user->id)->first();
         if ($code == null) {
             $this->user->addInviteCode();
-			$code = InviteCode::where('user_id', $this->user->id)->first();
+            $code = InviteCode::where('user_id', $this->user->id)->first();
         }
 
         $pageNum = 1;
@@ -887,17 +870,17 @@ class UserController extends BaseController
         $customcode = $request->getParam('customcode');
         $customcode = trim($customcode);
 
-        if (!Tools::is_validate($customcode) || $price < 0 || strlen($customcode)<1 || strlen($customcode)>32) {
+        if (!Tools::is_validate($customcode) || $price < 0 || strlen($customcode) < 1 || strlen($customcode) > 32) {
             $res['ret'] = 0;
             $res['msg'] = "非法请求,邀请链接后缀不能包含特殊符号且长度不能大于32字符";
             return $response->getBody()->write(json_encode($res));
         }
 
-        if (InviteCode::where('code', $customcode)->count()!=0) {
+        if (InviteCode::where('code', $customcode)->count() != 0) {
             $res['ret'] = 0;
             $res['msg'] = "此后缀名被抢注了";
             return $response->getBody()->write(json_encode($res));
-        } 
+        }
 
         $user = $this->user;
 
@@ -1112,13 +1095,13 @@ class UserController extends BaseController
             return $response->getBody()->write(json_encode($res));
         }
 
-        if (bccomp($user->money , $price,2)==-1) {
+        if (bccomp($user->money, $price, 2) == -1) {
             $res['ret'] = 0;
             $res['msg'] = '喵喵喵~ 当前余额不足，总价为' . $price . '元。</br><a href="/user/code">点击进入充值界面</a>';
             return $response->getBody()->write(json_encode($res));
         }
 
-        $user->money =bcsub($user->money , $price,2);
+        $user->money = bcsub($user->money, $price, 2);
         $user->save();
 
         if ($disableothers == 1) {
@@ -1218,7 +1201,7 @@ class UserController extends BaseController
     {
         $title = $request->getParam('title');
         $content = $request->getParam('content');
-
+        $markdown = $request->getParam('markdown');
 
         if ($title == "" || $content == "") {
             $res['ret'] = 0;
@@ -1232,9 +1215,7 @@ class UserController extends BaseController
             return $this->echoJson($response, $res);
         }
 
-
         $ticket = new Ticket();
-
         $antiXss = new AntiXSS();
 
         $ticket->title = $antiXss->xss_clean($title);
@@ -1244,19 +1225,38 @@ class UserController extends BaseController
         $ticket->datetime = time();
         $ticket->save();
 
-        $adminUser = User::where("is_admin", "=", "1")->get();
-        foreach ($adminUser as $user) {
-            $subject = Config::get('appName') . "-新工单被开启";
-            $to = $user->email;
-            $text = "管理员，有人开启了新的工单，请您及时处理。";
-            try {
-                Mail::send($to, $subject, 'news/warn.tpl', [
-                    "user" => $user, "text" => $text
-                ], [
-                ]);
-            } catch (\Exception $e) {
-                echo $e->getMessage();
+        if (Config::get('mail_ticket') == 'true' && $markdown != '') {
+            $adminUser = User::where("is_admin", "=", "1")->get();
+            foreach ($adminUser as $user) {
+                $subject = Config::get('appName') . "-新工单被开启";
+                $to = $user->email;
+                $text = "管理员，有人开启了新的工单，请您及时处理。";
+                try {
+                    Mail::send($to, $subject, 'news/warn.tpl', [
+                        "user" => $user, "text" => $text
+                    ], [
+                    ]);
+                } catch (\Exception $e) {
+                    echo $e->getMessage();
+                }
             }
+        }
+
+        if (Config::get('useScFtqq') == 'true' && $markdown != '') {
+            $ScFtqq_SCKEY = Config::get('ScFtqq_SCKEY');
+            $postdata = http_build_query(
+                array(
+                    'text' => Config::get('appName') . "-新工单被开启",
+                    'desp' => $markdown
+                ));
+            $opts = array('http' =>
+                array(
+                    'method' => 'POST',
+                    'header' => 'Content-type: application/x-www-form-urlencoded',
+                    'content' => $postdata
+                ));
+            $context = stream_context_create($opts);
+            file_get_contents('https://sc.ftqq.com/' . $ScFtqq_SCKEY . '.send', false, $context);
         }
 
         $res['ret'] = 1;
@@ -1269,6 +1269,7 @@ class UserController extends BaseController
         $id = $args['id'];
         $content = $request->getParam('content');
         $status = $request->getParam('status');
+        $markdown = $request->getParam('markdown');
 
         if ($content == "" || $status == "") {
             $res['ret'] = 0;
@@ -1290,34 +1291,71 @@ class UserController extends BaseController
         }
 
         if ($status == 1 && $ticket_main->status != $status) {
-            $adminUser = User::where("is_admin", "=", "1")->get();
-            foreach ($adminUser as $user) {
-                $subject = Config::get('appName') . "-工单被重新开启";
-                $to = $user->email;
-                $text = "管理员，有人重新开启了<a href=\"" . Config::get('baseUrl') . "/admin/ticket/" . $ticket_main->id . "/view\">工单</a>，请您及时处理。";
-                try {
-                    Mail::send($to, $subject, 'news/warn.tpl', [
-                        "user" => $user, "text" => $text
-                    ], [
-                    ]);
-                } catch (\Exception $e) {
-                    echo $e->getMessage();
+            if (Config::get('mail_ticket') == 'true' && $markdown != '') {
+                $adminUser = User::where("is_admin", "=", "1")->get();
+                foreach ($adminUser as $user) {
+                    $subject = Config::get('appName') . "-工单被重新开启";
+                    $to = $user->email;
+                    $text = "管理员，有人重新开启了<a href=\"" . Config::get('baseUrl') . "/admin/ticket/" . $ticket_main->id . "/view\">工单</a>，请您及时处理。";
+                    try {
+                        Mail::send($to, $subject, 'news/warn.tpl', [
+                            "user" => $user, "text" => $text
+                        ], [
+                        ]);
+                    } catch (\Exception $e) {
+                        echo $e->getMessage();
+                    }
                 }
             }
+            if (Config::get('useScFtqq') == 'true' && $markdown != '') {
+                $ScFtqq_SCKEY = Config::get('ScFtqq_SCKEY');
+                $postdata = http_build_query(
+                    array(
+                        'text' => Config::get('appName') . "-工单被重新开启",
+                        'desp' => $markdown
+                    ));
+                $opts = array('http' =>
+                    array(
+                        'method' => 'POST',
+                        'header' => 'Content-type: application/x-www-form-urlencoded',
+                        'content' => $postdata
+                    ));
+                $context = stream_context_create($opts);
+                file_get_contents('https://sc.ftqq.com/' . $ScFtqq_SCKEY . '.send', false, $context);
+                $useScFtqq = Config::get('ScFtqq_SCKEY');
+            }
         } else {
-            $adminUser = User::where("is_admin", "=", "1")->get();
-            foreach ($adminUser as $user) {
-                $subject = Config::get('appName') . "-工单被回复";
-                $to = $user->email;
-                $text = "管理员，有人回复了<a href=\"" . Config::get('baseUrl') . "/admin/ticket/" . $ticket_main->id . "/view\">工单</a>，请您及时处理。";
-                try {
-                    Mail::send($to, $subject, 'news/warn.tpl', [
-                        "user" => $user, "text" => $text
-                    ], [
-                    ]);
-                } catch (\Exception $e) {
-                    echo $e->getMessage();
+            if (Config::get('mail_ticket') == 'true' && $markdown != '') {
+                $adminUser = User::where("is_admin", "=", "1")->get();
+                foreach ($adminUser as $user) {
+                    $subject = Config::get('appName') . "-工单被回复";
+                    $to = $user->email;
+                    $text = "管理员，有人回复了<a href=\"" . Config::get('baseUrl') . "/admin/ticket/" . $ticket_main->id . "/view\">工单</a>，请您及时处理。";
+                    try {
+                        Mail::send($to, $subject, 'news/warn.tpl', [
+                            "user" => $user, "text" => $text
+                        ], [
+                        ]);
+                    } catch (\Exception $e) {
+                        echo $e->getMessage();
+                    }
                 }
+            }
+            if (Config::get('useScFtqq') == 'true' && $markdown != '') {
+                $ScFtqq_SCKEY = Config::get('ScFtqq_SCKEY');
+                $postdata = http_build_query(
+                    array(
+                        'text' => Config::get('appName') . "-工单被回复",
+                        'desp' => $markdown
+                    ));
+                $opts = array('http' =>
+                    array(
+                        'method' => 'POST',
+                        'header' => 'Content-type: application/x-www-form-urlencoded',
+                        'content' => $postdata
+                    ));
+                $context = stream_context_create($opts);
+                file_get_contents('https://sc.ftqq.com/' . $ScFtqq_SCKEY . '.send', false, $context);
             }
         }
 
@@ -1370,7 +1408,7 @@ class UserController extends BaseController
         $wechat = trim($wechat);
 
         $user = $this->user;
-		
+
         if ($user->telegram_id != 0) {
             $res['ret'] = 0;
             $res['msg'] = "您绑定了 Telegram ，所以此项并不能被修改。";
@@ -1625,14 +1663,13 @@ class UserController extends BaseController
     public function doCheckIn($request, $response, $args)
     {
         if (Config::get('enable_checkin_captcha') == 'true') {
-            switch(Config::get('captcha_provider'))
-            {
+            switch (Config::get('captcha_provider')) {
                 case 'recaptcha':
                     $recaptcha = $request->getParam('recaptcha');
-                    if ($recaptcha == ''){
+                    if ($recaptcha == '') {
                         $ret = false;
-                    }else{
-                        $json = file_get_contents("https://recaptcha.net/recaptcha/api/siteverify?secret=".Config::get('recaptcha_secret')."&response=".$recaptcha);
+                    } else {
+                        $json = file_get_contents("https://recaptcha.net/recaptcha/api/siteverify?secret=" . Config::get('recaptcha_secret') . "&response=" . $recaptcha);
                         $ret = json_decode($json)->success;
                     }
                     break;
@@ -1647,11 +1684,11 @@ class UserController extends BaseController
             }
         }
 
-		if(strtotime($this->user->expire_in) < time()){
+        if (strtotime($this->user->expire_in) < time()) {
             $res['ret'] = 0;
-		    $res['msg'] = "您的账户已过期，无法签到。";
+            $res['msg'] = "您的账户已过期，无法签到。";
             return $response->getBody()->write(json_encode($res));
-		}
+        }
 
         if (!$this->user->isAbleToCheckin()) {
             $res['ret'] = 0;
@@ -1699,8 +1736,7 @@ class UserController extends BaseController
             $user->kill_user();
             $res['ret'] = 1;
             $res['msg'] = "您的帐号已经从我们的系统中删除。欢迎下次光临!";
-        }
-		else {
+        } else {
             $res['ret'] = 0;
             $res['msg'] = "管理员不允许删除，如需删除请联系管理员。";
         }
@@ -1799,7 +1835,7 @@ class UserController extends BaseController
             "uid" => Utils\Cookie::get('old_uid'),
             "email" => Utils\Cookie::get('old_email'),
             "key" => Utils\Cookie::get('old_key'),
-            "ip" => Utils\Cookie::get('old_expire_in'),
+            "ip" => Utils\Cookie::get('old_ip'),
             "expire_in" => $expire_in,
             "old_uid" => null,
             "old_email" => null,
