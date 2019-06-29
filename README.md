@@ -7,8 +7,6 @@
 - 加入定时任务自动检测
 - 相关配置在.config.php
 - 不定时同步[NimaQu](https://github.com/NimaQu/ss-panel-v3-mod_Uim)库
-- 我的站点[云](http://yun.9in.info)
-- 我的博客[CHEN](http://9in.info)
 
 ### 讨论群
 https://t.me/chenAirport
