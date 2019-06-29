@@ -26,25 +26,25 @@ $configuration = [
 $container = new Container($configuration);
 
 // Init slim php view
-$container['renderer'] = function ($c) {
+$container['renderer'] = static function ($c) {
     return new Slim\Views\PhpRenderer();
 };
 
-$container['notFoundHandler'] = function ($c) {
-    return function ($request, $response) use ($c) {
+$container['notFoundHandler'] = static function ($c) {
+    return static function ($request, $response) use ($c) {
         return $response->withAddedHeader('Location', '/404');
     };
 };
 
-$container['notAllowedHandler'] = function ($c) {
-    return function ($request, $response, $methods) use ($c) {
+$container['notAllowedHandler'] = static function ($c) {
+    return static function ($request, $response, $methods) use ($c) {
         return $response->withAddedHeader('Location', '/405');
     };
 };
 
 if ($debug == false) {
-    $container['errorHandler'] = function ($c) {
-        return function ($request, $response, $exception) use ($c) {
+    $container['errorHandler'] = static function ($c) {
+        return static function ($request, $response, $exception) use ($c) {
             return $response->withAddedHeader('Location', '/500');
         };
     };
@@ -147,12 +147,19 @@ $app->group('/user', function () {
     //Reconstructed Payment System
     $this->post('/payment/purchase', App\Services\Payment::class . ':purchase');
     $this->get('/payment/return', App\Services\Payment::class . ':returnHTML');
+
+    // Crypto Payment - BTC, ETH, EOS, BCH, LTC etch
+    $this->post('/payment/bitpay/purchase', App\Services\BitPayment::class . ':purchase');
+    $this->get('/payment/bitpay/return', App\Services\BitPayment::class . ':returnHTML');
 })->add(new Auth());
 
 $app->group('/payment', function () {
     $this->post('/notify', App\Services\Payment::class . ':notify');
     $this->post('/notify/{type}', App\Services\Payment::class . ':notify');
     $this->post('/status', App\Services\Payment::class . ':getStatus');
+
+    $this->post('/bitpay/notify', App\Services\BitPayment::class . ':notify');
+    $this->post('/bitpay/status', App\Services\BitPayment::class . ':getStatus');
 });
 
 // Auth
@@ -319,6 +326,7 @@ $app->group('/mod_mu', function () {
     $this->post('/nodes/{id}/info', App\Controllers\Mod_Mu\NodeController::class . ':info');
 
     $this->get('/nodes', App\Controllers\Mod_Mu\NodeController::class . ':get_all_info');
+    $this->post('/nodes/config', App\Controllers\Mod_Mu\NodeController::class . ':getConfig');
 
     $this->get('/func/detect_rules', App\Controllers\Mod_Mu\FuncController::class . ':get_detect_logs');
     $this->get('/func/relay_rules', App\Controllers\Mod_Mu\FuncController::class . ':get_relay_rules');
