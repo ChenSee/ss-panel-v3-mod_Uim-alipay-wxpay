@@ -8,6 +8,9 @@
 - 相关配置在.config.php
 - 不定时同步[NimaQu](https://github.com/NimaQu/ss-panel-v3-mod_Uim)库
 
+### 讨论群
+https://t.me/chenAirport
+
 ### 本次更新
 - 免签约微信支付程序自检测 根据COOKIE
 - 支付宝判断完善
@@ -18,11 +21,13 @@
 - 添加手动开启支付开关（检测机制有可能在cookie失效情况下会直接关掉）
 - 添加固定金额支付模式（也可手动输入支付模式）
 - 改用依赖的形式（以后核心更新只需要```composer update chen-see/chen-pay```）
-- 运行方式的改变不再使用定时任务（更稳定）
+- ~~运行方式的改变不再使用定时任务（更稳定）~~
 - 同步支付内核更新
 - 更新支付宝双接口轮流切换API达到支付宝防止频繁访问阻止机制
 - 如果单一接口出现阻止则会持续使用另外接口
 - 更新日志保存地址为/storage/logs/chenpay.log
+- 有订单情况下才是10秒一次的频率 杜绝支付宝风控
+- 无订单情况下2分钟一次
 
 ### 相关截图
 <img src="http://ww1.sinaimg.cn/large/006v0omggy1fvgz36p0ckj30u02kck43.jpg" width="300"/>
@@ -72,12 +77,23 @@ $System_Config['payment_system']='chenAlipay';
 
 #### 7. 执行命令
 ```
-# 前台运行
-# php /你的目录/xcat alipay
-# php /你的目录/xcat wxpay
-# 后台运行
-# nohup php /你的目录/xcat alipay &
-# nohup php /你的目录/xcat wxpay &
+# crontab -e
+# 方法一
+* * * * * for((i=1;i<=5;i++));do php /你的目录/xcat wxpay;sleep 10;done
+* * * * * for((i=1;i<=5;i++));do php /你的目录/xcat alipay;sleep 10;done
+# 方法二
+* * * * * php /你的目录/xcat wxpay
+* * * * * sleep 10; php /你的目录/xcat wxpay
+* * * * * sleep 20; php /你的目录/xcat wxpay
+* * * * * sleep 30; php /你的目录/xcat wxpay
+* * * * * sleep 40; php /你的目录/xcat wxpay
+* * * * * sleep 50; php /你的目录/xcat wxpay
+* * * * * php /你的目录/xcat alipay
+* * * * * sleep 10; php /你的目录/xcat alipay
+* * * * * sleep 20; php /你的目录/xcat alipay
+* * * * * sleep 30; php /你的目录/xcat alipay
+* * * * * sleep 40; php /你的目录/xcat alipay
+* * * * * sleep 50; php /你的目录/xcat alipay
 # 日志查看
 # tail /你的目录/storage/logs/chenpay.log
 ```
@@ -93,13 +109,6 @@ $System_Config['payment_system']='chenAlipay';
 <img src="http://ww1.sinaimg.cn/large/006v0omggy1fv6sq3h0dfg308s0fnx6s.gif" width="250"/>
 <img src="http://ww1.sinaimg.cn/large/006v0omggy1fvgyx8bf97g304p08cb2a.gif" width="250"/>
 
-### 赞助我才能有更多的动力啊 哈哈
-<img src="http://ww1.sinaimg.cn/large/006v0omggy1fvgzvir0aij30q913t406.jpg" width="300"/>
-<img src="http://ww1.sinaimg.cn/large/006v0omggy1fvgzwth0dvj30u715fwgz.jpg" width="300"/>
-
-### 赞助老铁
-@TNOID| 咸鱼萌新|破墙机场 @anlio
-
 ### 原作者介绍
 
 **ss-panel-v3-mod**是一款专为shadowsocks设计的web前端面板，再次感谢ss-panel-v3-mod 的制作者，修改后的功能简介：
@@ -109,7 +118,7 @@ $System_Config['payment_system']='chenAlipay';
 - **商店**：商品增加同时连接设备数，用户限速属性
 - 从肥羊那里**抄**来的：新用户注册现金奖励|高等级节点体验|设备数量限制
 - **优化**：css和js等置入本地提升加载速度
-- 增加**v2Ray** 功能，详情请看 [wiki](https://github.com/NimaQu/ss-panel-v3-mod_Uim/wiki/V2Ray-%E5%AF%B9%E6%8E%A5%E6%95%99%E7%A8%8B)
+- 增加**v2Ray** 功能，详情请看 [wiki](https://github.com/NimaQu/ss-panel-v3-mod_Uim/wiki/v2ray-%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B)
 
 **原作者** [galaxychuck](https://github.com/galaxychuck)
 
