@@ -58,6 +58,7 @@ $System_Config['payment_system']='chenAlipay';
 - 浏览器按f12再刷新一下
 - 可以看到tradeListQuery.json
 - 点击header它找到Cookie: 后面就是cookie全部复制到后台配置框内
+- 支付宝需开通商家服务 (手机支付宝搜索商家服务即可开通)
 
 #### 5. 获取微信COOKIE
 - 浏览器访问：https://wx.qq.com（此地址必须设置到后台支付设置里，登录完成后会有所变更）
@@ -99,6 +100,7 @@ $System_Config['payment_system']='chenAlipay';
 ```
 
 ### 特别说明:
+- 支付宝需开通商家服务 (手机支付宝搜索商家服务即可开通)
 - 服务器时间必须要正确的中国时间，需要匹配支付宝微信时间
 - 排队机制修改同一支付类型支持不同支付金额,同一支付金额不同支付类型
 - 出现cookie失效有可能是服务器无法访问相关接口原因导致掉线
